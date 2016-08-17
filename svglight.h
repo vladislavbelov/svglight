@@ -1,5 +1,5 @@
 #ifndef SVGLIGHT_INCLUDED
-#define SVGLIGHT_INCLUDE
+#define SVGLIGHT_INCLUDED
 
 #include <fstream>
 #include <string>
@@ -9,6 +9,10 @@
 namespace svglight
 {
 
+/**
+ * Basic color class
+ */
+
 class Color
 {
 public:
@@ -16,6 +20,10 @@ public:
     Color(int r = 0, int g = 0, int b = 0) : r(r), g(g), b(b) {}
     std::string to_string() const;
 };
+
+/**
+ * Describes property of a tag
+ */
 
 class Property
 {
@@ -26,6 +34,10 @@ public:
 
     std::string name, value;
 };
+
+/**
+ * Describes basic svg element
+ */
 
 class Tag
 {
@@ -44,13 +56,28 @@ public:
     std::vector<Tag> children;
 };
 
+/**
+ * SVG image class
+ */
+
 class SVG
 {
 public:
+
+    /**
+     * A constructor.
+     * Fills header and svg tags.
+     */
     SVG();
 
     // TODO: implement svg loading
     void open(const std::string& path);
+
+    /**
+     * save the image to the file
+     * @param path a filename of the image
+     * @return true if image has saved
+     */
     bool save(const std::string& path);
 
     void draw_line(float x1, float y1, float x2, float y2, const Color& color = Color());
