@@ -111,6 +111,7 @@ public:
     void draw_line(float x1, float y1, float x2, float y2, const Color& color = Color());
     void draw_rect(float x, float y, float width, float height, const Color& color = Color());
     void draw_circle(float x, float y, float radius, const Color& color = Color());
+    void draw_ellipse(float x, float y, float radius_x, float radius_y, const Color& color = Color());
     void draw_text(float x, float y, const std::string& text, const Color& color = Color());
 
 private:
@@ -184,6 +185,19 @@ void SVG::draw_circle(float x, float y, float radius, const Color& color)
     circle.add(Property("stroke", color));
 
     svg.add(circle);
+}
+
+void SVG::draw_ellipse(float x, float y, float radius_x, float radius_y, const Color& color)
+{
+    Tag ellipse("ellipse");
+    ellipse.add(Property("cx", x));
+    ellipse.add(Property("cy", y));
+    ellipse.add(Property("rx", radius_x));
+    ellipse.add(Property("ry", radius_y));
+    ellipse.add(Property("fill", "none"));
+    ellipse.add(Property("stroke", color));
+
+    svg.add(ellipse);
 }
 
 void SVG::draw_text(float x, float y, const std::string& text, const Color& color)
