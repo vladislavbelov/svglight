@@ -57,6 +57,7 @@ public:
     Property(const std::string& name, const std::string& str_value) : name(name), value(str_value) {}
     Property(const std::string& name, const int& int_value) : name(name), value(std::to_string(int_value)) {}
     Property(const std::string& name, const float& float_value) : name(name), value(std::to_string(float_value)) {}
+    Property(const std::string& name, const Color& color_value) : name(name), value(color_value.to_string()) {}
 
     std::string name, value;
 };
@@ -78,6 +79,7 @@ public:
     friend std::ostream& operator<<(std::ostream& out, const Tag& tag);
 
     std::string name;
+    std::string inner_text;
     std::vector<Property> properties;
     std::vector<Tag> children;
 };
@@ -107,6 +109,9 @@ public:
     bool save(const std::string& path);
 
     void draw_line(float x1, float y1, float x2, float y2, const Color& color = Color());
+    void draw_rect(float x, float y, float width, float height, const Color& color = Color());
+    void draw_circle(float x, float y, float radius, const Color& color = Color());
+    void draw_text(float x, float y, const std::string& text, const Color& color = Color());
 
 private:
     Tag xml, doctype, svg;
@@ -151,9 +156,46 @@ void SVG::draw_line(float x1, float y1, float x2, float y2, const Color& color)
     line.add(Property("y1", y1));
     line.add(Property("x2", x2));
     line.add(Property("y2", y2));
-    line.add(Property("style", "stroke:" + color.to_string()));
+    line.add(Property("stroke", color));
 
     svg.add(line);
+}
+
+void SVG::draw_rect(float x, float y, float width, float height, const Color& color)
+{
+    Tag rect("rect");
+    rect.add(Property("x", x));
+    rect.add(Property("y", y));
+    rect.add(Property("width", width));
+    rect.add(Property("height", height));
+    rect.add(Property("fill", "none"));
+    rect.add(Property("stroke", color));
+
+    svg.add(rect);
+}
+
+void SVG::draw_circle(float x, float y, float radius, const Color& color)
+{
+    Tag circle("circle");
+    circle.add(Property("cx", x));
+    circle.add(Property("cy", y));
+    circle.add(Property("r", radius));
+    circle.add(Property("fill", "none"));
+    circle.add(Property("stroke", color));
+
+    svg.add(circle);
+}
+
+void SVG::draw_text(float x, float y, const std::string& text, const Color& color)
+{
+    Tag txt("text");
+    txt.add(Property("x", x));
+    txt.add(Property("y", y));
+    txt.add(Property("fill", color));
+
+    txt.inner_text = text;
+
+    svg.add(txt);
 }
 
 void Tag::add(const Property& property)
@@ -173,13 +215,15 @@ std::ostream& operator<<(std::ostream& out, const Tag& tag)
         out << " " << property.name << "=\"" << property.value << "\"";
     if (tag.name[0] == '?')
         out << '?';
-    else if (std::isalpha(tag.name[0]) && tag.children.empty())
+    else if (std::isalpha(tag.name[0]) && tag.children.empty() && tag.inner_text.empty())
         out << "/";
     out << ">";
 
+    if (!tag.inner_text.empty())
+        out << tag.inner_text;
     for (Tag child: tag.children)
         out << child;
-    if (!tag.children.empty())
+    if (!tag.children.empty() || !tag.inner_text.empty())
         out << "</" << tag.name << ">";
 
     return out;
