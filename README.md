@@ -1,18 +1,35 @@
 # svglight
-SVG light library for C++
+SVG light library for C++. It provides functions of drawing and saving SVG files.
 
 ## Examples
 ```cpp
 #include <svglight.h>
 
-...
+int main(int argc, char* argv[])
+{
+    svglight::SVG image;
+    image.draw_line(0, 0, 10, 0);
+    image.draw_line(0, 0, 0, 10);
+    image.draw_line(10, 10, 0, 10);
+    image.draw_line(10, 10, 0, 10);
+    image.save("result.svg");
+    return 0;
+}
+```
 
-svglight::SVG image;
-image.draw_line(0, 0, 10, 0);
-image.draw_line(0, 0, 0, 10);
-image.draw_line(10, 10, 0, 10);
-image.draw_line(10, 10, 0, 10);
-image.save("result.svg");
+or
+
+```cpp
+#include <svglight.h>
+
+int main(int argc, char* argv[])
+{
+    svglight::SVG image(512, 512);
+    image.draw_ellipse(256, 256, 128, 64);
+    image.draw_text(200, 200, "This is ellipse!");
+    image.save("result.svg");
+    return 0;
+}
 ```
 
 ## Installation

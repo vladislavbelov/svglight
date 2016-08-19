@@ -96,7 +96,7 @@ public:
      * A constructor.
      * Fills header and svg tags.
      */
-    SVG();
+    SVG(int image_width = 640, int image_height = 480);
 
     // TODO: implement svg loading
     void open(const std::string& path);
@@ -117,13 +117,15 @@ public:
 private:
     Tag xml, doctype, svg;
 
+    int image_width, image_height;
+
     inline std::string property(const std::string& name, const std::string& value);
 };
 
-SVG::SVG()
+SVG::SVG(int image_width, int image_height)
     : xml("?xml"),
     doctype("!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\""),
-    svg("svg")
+    svg("svg"), image_width(image_width), image_height(image_height)
 {
     xml.add(Property("version", "1.0"));
     xml.add(Property("encoding", "UTF-8"));
@@ -134,8 +136,8 @@ SVG::SVG()
     svg.add(Property("xmlns", "http://www.w3.org/2000/svg"));
     svg.add(Property("xmlns:xlink", "http://www.w3.org/1999/xlink"));
     svg.add(Property("xmlns:ev", "http://www.w3.org/2001/xml-events"));
-    svg.add(Property("width", "320px"));
-    svg.add(Property("height", "240px"));
+    svg.add(Property("width", image_width));
+    svg.add(Property("height", image_height));
 }
 
 bool SVG::save(const std::string& path)
